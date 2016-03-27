@@ -5,8 +5,11 @@
 #include <iomanip>
 #include <fstream>
 #include <math.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d/features2d.hpp>
 
 
 void move(char* &p) {
@@ -102,7 +105,10 @@ void calculateGradient(int k, int m, double *d) {
         Q = Q - a[i] * Y;
     }
 
-    Mat R = Mat::ones(num, num, CV_32FC1) * Q;
+    Mat R(num, 1, CV_32FC1);
+    Mat O = Mat::ones(num, num, CV_32FC1);
+    cout << O << endl;
+    R = O * Q;
 
     double bj;
 
@@ -110,7 +116,7 @@ void calculateGradient(int k, int m, double *d) {
     for (int i = 0; i < l; ++i) {
         int j = i + b;
         Mat Y(1, num, CV_32FC1, s[j % m]);
-        Mat S(1, num, CV_32FC1, y[i % m]);
+        Mat S(1, num, CV_32FC1, y[j % m]);
 
         P = Y.t() * S;
         double p = 1 / P.ptr<float>(0)[0];
@@ -133,7 +139,7 @@ void calculateGradient(int k, int m, double *d) {
 
 
 int main() {
-    ifstream trainningData("../../data-of-machine-learning/train.csv");
+    ifstream trainningData("../../data-of-machine-learning/test.csv");
     stringstream dataReader;
     char header[4000], line[2500];
     double max[400] = {0}, min[400] = {0};
@@ -175,12 +181,14 @@ int main() {
     double *d = new double[num];
 
     for (int i = 0; i < 2000; ++i) {
+        cout << "i " << i << endl;
         calculateGradient(i, 50, d);
         double min = bias(0.4, d);
         double minLamda = 0.4;
         for (int j = 1; j <= 5; ++j) {
             float lamda = 0.1 * j;
             double val = bias(lamda, d);
+            cout << "j " << j << endl;
             if (val < min) {
                 min = val;
                 minLamda = lamda;
