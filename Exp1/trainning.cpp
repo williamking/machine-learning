@@ -27,11 +27,11 @@ int main() {
     char *p;
     const char *split = ",";
     int num = 0;
-    p = strtok(header, split);
+	p = header;
     while (p != NULL) {
         paras[num] = 1; 
         ++num;
-        p = strtok(NULL, split);
+		move(p);
     }
     num = num - 2;
 
