@@ -19,13 +19,11 @@ double h(double y) {
 int main() {
     char *buffer;
     long fileLength;
-    FILE* file = fopen("../../data-of-machine-learning/train.txt", "rb");
+    FILE* file = fopen("D:\\train.txt", "rb");
     char header[4000], line[2500];
     double paras[11400], learningRate = 0.5, randomRate = 0.004;
     int numOfData = 0, length = 0;
     double *lineData;
-    bool* lab = new bool[21777020];
-    char* lines[217777020];
 
     if (file == NULL) {
         fputs("File error!", stderr);
@@ -49,6 +47,10 @@ int main() {
     }
 
     fclose(file);
+    
+    long maxL = 21777020;
+    bool* lab = new bool[maxL];
+    char** lines = new char*[maxL]; 
 
     cout << "asa" << endl;
 
@@ -216,6 +218,8 @@ int main() {
         else resultData << i++ << ',' << 0 << endl;
     }
     delete lab;
+    delete lines;
+    free(buffer);
 
     return 0;
 }
