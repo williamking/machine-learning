@@ -20,6 +20,10 @@ void move(char* &p) {
 
 double data[25002 * 400];
 
+double h(double y) {
+    return 1.0 / (1 + exp(y));
+}
+
 int main() {
     ifstream trainningData("../../data-of-machine-learning/train.csv");
     stringstream dataReader;
@@ -87,7 +91,7 @@ int main() {
         for (int j = 0; j < num; ++j) {
             preditVal += paras[j] * lineData[j] * lineData[j];
         }
-        double weight = preditVal - lineData[num];
+        double weight = h(preditVal) - lineData[num];
         //cout << weight << endl;
         for (int j = 0; j < num; ++j) {
             paras[j] -= weight * lineData[j] * randomRate;
@@ -114,7 +118,7 @@ int main() {
             for (int j = 0; j < num; ++j) {
                 preditVal += paras[j] * lineData[j] * lineData[j];
             }
-            double weight = preditVal - lineData[num];
+            double weight = h(preditVal) - lineData[num];
             //cout << weight << endl;
             loss += weight * weight;
             for (int j = 0; j < num; ++j) {
@@ -129,7 +133,7 @@ int main() {
         lastLoss = loss;
 
         for (int j = 0; j < num; ++j) {
-            if (j != 0) paras[j] *= (1 - learningRate * 1 / numOfData);
+            //if (j != 0) paras[j] *= (1 - learningRate * 1 / numOfData);
             if (min[j] != 0 || max[j] != 0) paras[j] -= regresses[j] * learningRate / numOfData;
             //lossData << regresses[j] * learningRate / numOfData;
             //if (j != num - 1) lossData << ",";
